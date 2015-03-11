@@ -26,10 +26,14 @@ char * author;
 %token T_ITEM
 %token T_CITE
 %token T_MAKETITLE
+%token T_BIBITEM
+%token T_IG
+%token T_DOC
+%token T_ITEMIZE
+%token T_TB
 %token BREAK_LINE
 
-
-%type <str> command
+%type <str> command bgparam endparam
 
 %start stmt_list
 
@@ -50,10 +54,26 @@ stmt:	T_STRING
 command:   '\\' T_DOCCLASS
 		 | '\\' T_USEPACKAGE
 		 | '\\' T_AUTHOR '{' T_STRING '}' { author = strdup($4); }
-		 | '\\' T_BEGIN
+		 | '\\' T_BEGIN '{' bgparam '}' 
+		 | '\\' T_END '{' endparam '}'
 		 | '\\' T_TITLE '{' T_STRING '}' { title = strdup($4); }
 		 | '\\' T_MAKETITLE { printf("%s - from %s\n", title, author); }
+		 | '\\' T_ITEM T_STRING
+		 | '\\' T_IT '{' T_STRING '}'
+		 | '\\' T_BF '{' T_STRING '}'
+		 | '\\' T_BIBITEM '{' T_STRING '}' T_STRING
 		 ;
+		 
+bgparam:  T_DOC
+        | T_ITEMIZE
+        | T_TB
+        ;
+
+endparam: T_DOC
+        | T_ITEMIZE
+        | T_TB
+        ;      
+
 
 %%
 

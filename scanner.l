@@ -20,17 +20,22 @@ ANY_CHAR .
 
 {WHITESPACE};
 
-"documentclass" { return T_DOCCLASS; }
-"usepackage"    { return T_USEPACKAGE;}
-"title"			{ return T_TITLE; }
-"author" 		{ return T_AUTHOR; }
-"begin"			{ return T_BEGIN; }
-"end"			{ return T_END; }
-"textbf"		{ return T_BF; }
-"textit" 		{ return T_IT; }
-"item"			{ return T_ITEM; }
-"maketitle"		{ return T_MAKETITLE; }
-"cite"			{ return T_CITE; }
+"documentclass"     { return T_DOCCLASS; }
+"usepackage"        { return T_USEPACKAGE;}
+"title"			    { return T_TITLE; }
+"author" 		    { return T_AUTHOR; }
+"begin"			    { return T_BEGIN; }
+"end"			    { return T_END; }
+"textbf"		    { return T_BF; }
+"textit" 		    { return T_IT; }
+"item"			    { return T_ITEM; }
+"maketitle"		    { return T_MAKETITLE; }
+"cite"			    { return T_CITE; }
+"bibitem"           { return T_BIBITEM; }
+"includegraphics"   { return T_IG; }
+"document"          { return T_DOC; }
+"itemize"           { return T_ITEMIZE; }
+"thebibliography"   { return T_TB; }    
 
 "$"				{ return '$'; }
 "\\"			{ return '\\'; }
