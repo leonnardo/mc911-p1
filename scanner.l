@@ -18,10 +18,8 @@ ANY_CHAR .
 
 %%
 
-/* ignora espacos em branco */
 {WHITESPACE};
 
-/* comandos do TeX */
 "documentclass" { return T_DOCCLASS; }
 "usepackage"    { return T_USEPACKAGE;}
 "title"			{ return T_TITLE; }
@@ -31,15 +29,15 @@ ANY_CHAR .
 "textbf"		{ return T_BF; }
 "textit" 		{ return T_IT; }
 "item"			{ return T_ITEM; }
+"maketitle"		{ return T_MAKETITLE; }
+"cite"			{ return T_CITE; }
 
-/* caracteres especiais do TeX */
 "$"				{ return '$'; }
-"\"				{ return '\'; }
+"\\"			{ return '\\'; }
 "{"				{ return '{'; }
 "}"				{ return '}'; }
 
 
-/* duplica a string e retorna o token */
 {STRING} {	
 		yylval.str = (char *) strdup(yytext);
 			return T_STRING;
