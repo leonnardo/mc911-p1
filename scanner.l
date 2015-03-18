@@ -10,19 +10,16 @@
 #include "parser.h"
 %}
 
-DOCCLASS \\documentclass(\[.*\])?\{.*\}
-USEPACKAGE \\usepackage(\[.*\])?\{.*\}
-AUTHOR \\author\{.*\}
-STRING [A-Za-z][A-Za-z0-9_-]*
+STRING [A-Za-z0-9_,.?!%*$@#%&-]*
 WHITESPACE [ \r\t]+
 BREAK_LINE [\n]
 ANY_CHAR .
 	
 %%
 
-{DOCCLASS};
-{USEPACKAGE};
-{AUTHOR};
+\\documentclass(\[.*\])?\{.*\}
+\\usepackage(\[.*\])?\{.*\}
+\\author\{.*\}
 
 "\\title"			   				{ return T_TITLE; }
 "\\begin{document}"					{ return T_BEGIN_DOC; }
@@ -31,8 +28,8 @@ ANY_CHAR .
 "\\end{document}"					{ return T_END_DOC; }
 "\\end{itemize}"					;//{ return T_END_ITEM; }
 "\\end{thebibliography}" 			;//{ return T_END_BIB; }
-"\\textbf"		    				;//{ return T_BF; }
-"\\textit" 		    				;//{ return T_IT; }
+"\\textbf"		    				{ return T_BF; }
+"\\textit" 		    				{ return T_IT; }
 "\\item"			    			;//{ return T_ITEM; }
 "\\maketitle"		    			{ return T_MAKETITLE; }
 "\\cite"			    			;//{ return T_CITE; }
@@ -64,3 +61,16 @@ ANY_CHAR .
 %%
 
 YYSTYPE yylval;
+
+int main(int argc, char** argv)
+{
+	if (0) {
+		int token;
+		while ((token = yylex()) != 0)
+			printf("Token: %d (%s)\n", token, yytext);
+		return 0;
+	} else {
+		return parseMain(argc, argv);
+	}
+     return 0;
+}
