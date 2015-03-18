@@ -13,6 +13,8 @@ char *concat(int count, ...);
 char * title;
 char * author;
 int maketitle = 0;
+int count_bb = 0;
+char* bibliography[200];
 
 %}
 
@@ -73,14 +75,26 @@ content: T_MAKETITLE  { maketitle = 1; }
 		| T_ITEM  '[' text ']' skipblanks text skipblanks { $$ = concat(6, "<li style='list-style-type: none;'>", "<b>", $3, "</b> ", $6, "</li>"); } 
 		| T_END_ITEM { $$ = "</ul>"; }
 		| T_BEGIN_BIB { $$ = "<h2>Referencias</h2>"; }
-		| T_BIBITEM '{' text '}' skipblanks text skipblanks { $$ = $6 }
+		| T_BIBITEM '{' text '}' skipblanks text skipblanks { 
+							bibliography[count_bb++] = strdup($3);
+							$$ = concat(3,"<i>",$6,"</i>");
+			}
 		| T_END_BIB skipblanks
+		| T_CITE '{' text '}' { 
+			int i;
+			for (i = 0; i < count_bb; i++) {
+				if (strcmp($3,bibliography[i]) == 0)
+					break;
+			}
+			char buff[3];
+			sprintf(buff, "%d", i);
+			$$ = concat(3,"[", buff, "]");
+		}
 		;
 
 
 text: text skipblanks T_STRING { $$ = concat(3,$1,$2,$3); }
 	| T_STRING { $$ = $1; }	
-	| T_CITE '{' text '}' {$$ = "";}
 	;
 
 skipblanks:
@@ -133,5 +147,7 @@ int yyerror(const char* errmsg) {
 int yywrap(void) { return 1; }
 int parseMain(int argc, char** argv) {
 	yyparse();
+	for (int j = 0; j < count_bb; j++)
+		printf("%s\n", bibliography[j]);
 	return 0;
 }
