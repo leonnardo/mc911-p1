@@ -30,14 +30,11 @@ int maketitle = 0;
 %token T_END_BIB
 %token T_BF
 %token T_IT
-%token T_ITEM
+%token <str> T_ITEM
 %token T_CITE
 %token <str> T_MAKETITLE
-%token T_BIBITEM
 %token T_IG
-%token T_DOC
-%token T_ITEMIZE
-%token T_TB
+%token T_BIBITEM	
 %token <str> BREAK_LINE
 %token <str> WHITESPACE
 
@@ -71,10 +68,20 @@ content: T_MAKETITLE  { maketitle = 1; }
 		| T_BF '{' text '}' { $$ = concat(3,"<b>",$3,"</b>"); }
 		| T_IT '{' text '}' { $$ = concat(3,"<i>",$3,"</i>"); }
 		| T_IG '{' text '}' { $$ = concat(3,"<img src='",$3,"' />"); }
+		| T_BEGIN_ITEM { $$ = "<ul>"; }
+		| T_ITEM  skipblanks text skipblanks { $$ = concat(3, "<li>",$3,"</li>"); } 
+		| T_ITEM  '[' text ']' skipblanks text skipblanks { $$ = concat(6, "<li style='list-style-type: none;'>", "<b>", $3, "</b> ", $6, "</li>"); } 
+		| T_END_ITEM { $$ = "</ul>"; }
+		| T_BEGIN_BIB { $$ = "<h2>Referencias</h2>"; }
+		| T_BIBITEM '{' text '}' skipblanks text skipblanks { $$ = $6 }
+		| T_END_BIB skipblanks
 		;
+
 
 text: text skipblanks T_STRING { $$ = concat(3,$1,$2,$3); }
 	| T_STRING { $$ = $1; }	
+	| T_CITE '{' text '}' {$$ = "";}
+	;
 
 skipblanks:
 	/*vaziozao*/
