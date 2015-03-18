@@ -10,7 +10,7 @@
 #include "parser.h"
 %}
 
-STRING [A-Za-z0-9_,.?!%*$@#%&-]*
+STRING [A-Za-z0-9_,.?!%*$@#%&\\()$-]*
 WHITESPACE [ \r\t]+
 BREAK_LINE [\n]
 ANY_CHAR .
