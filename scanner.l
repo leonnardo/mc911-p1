@@ -33,7 +33,7 @@ ANY_CHAR .
 "\\item"			    			;//{ return T_ITEM; }
 "\\maketitle"		    			{ return T_MAKETITLE; }
 "\\cite"			    			;//{ return T_CITE; }
-"\\includegraphics"   				;//{ return T_IG; }
+"\\includegraphics"   				{ return T_IG; }
 "\\thebibliography"   				;//{ return T_TB; }    
 
 "{"									{ return '{'; }

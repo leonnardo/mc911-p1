@@ -50,11 +50,11 @@ int maketitle = 0;
 %%
 
 html_doc: skipblanks header skipblanks T_BEGIN_DOC skipblanks body skipblanks T_END_DOC skipblanks {
-			printf("<html><header>\n");
+			printf("<html>\n<header>\n");
 			if (maketitle)
-				printf("<title>%s</title>", $2);
+				printf("<title>%s</title>\n", $2);
 			printf("</header>");
-			printf("<body>%s</body></html>", $6);
+			printf("<body>%s\n</body>\n</html>", $6);
 
 		}
 
@@ -68,6 +68,7 @@ body: content { $$ = $1; }
 content: T_MAKETITLE  { maketitle = 1; }      
 		| T_BF '{' text '}' { $$ = concat(3,"<b>",$3,"</b>"); }
 		| T_IT '{' text '}' { $$ = concat(3,"<i>",$3,"</i>"); }
+		| T_IG '{' text '}' { $$ = concat(3,"<img src='",$3,"' />"); }
 		;
 
 text: text skipblanks T_STRING { $$ = concat(3,$1,$2,$3); }
