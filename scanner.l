@@ -10,37 +10,46 @@
 #include "parser.h"
 %}
 
-
+DOCCLASS \\documentclass(\[.*\])?\{.*\}
+USEPACKAGE \\usepackage(\[.*\])?\{.*\}
+AUTHOR \\author\{.*\}
 STRING [A-Za-z][A-Za-z0-9_-]*
 WHITESPACE [ \r\t]+
 BREAK_LINE [\n]
 ANY_CHAR .
-
+	
 %%
 
-{WHITESPACE};
+{DOCCLASS};
+{USEPACKAGE};
+{AUTHOR};
 
-"documentclass"     { return T_DOCCLASS; }
-"usepackage"        { return T_USEPACKAGE;}
-"title"			    { return T_TITLE; }
-"author" 		    { return T_AUTHOR; }
-"begin"			    { return T_BEGIN; }
-"end"			    { return T_END; }
-"textbf"		    { return T_BF; }
-"textit" 		    { return T_IT; }
-"item"			    { return T_ITEM; }
-"maketitle"		    { return T_MAKETITLE; }
-"cite"			    { return T_CITE; }
-"bibitem"           { return T_BIBITEM; }
-"includegraphics"   { return T_IG; }
-"document"          { return T_DOC; }
-"itemize"           { return T_ITEMIZE; }
-"thebibliography"   { return T_TB; }    
+"\\title"			   				{ return T_TITLE; }
+"\\begin{document}"					{ return T_BEGIN_DOC; }
+"\\begin{itemize}"					;//{ return T_BEGIN_ITEM; }
+"\\begin{thebibliography}" 			;//{ return T_BEGIN_BIB; }
+"\\end{document}"					{ return T_END_DOC; }
+"\\end{itemize}"					;//{ return T_END_ITEM; }
+"\\end{thebibliography}" 			;//{ return T_END_BIB; }
+"\\textbf"		    				;//{ return T_BF; }
+"\\textit" 		    				;//{ return T_IT; }
+"\\item"			    			;//{ return T_ITEM; }
+"\\maketitle"		    			{ return T_MAKETITLE; }
+"\\cite"			    			;//{ return T_CITE; }
+"\\includegraphics"   				;//{ return T_IG; }
+"\\thebibliography"   				;//{ return T_TB; }    
 
-"$"				{ return '$'; }
-"\\"			{ return '\\'; }
-"{"				{ return '{'; }
-"}"				{ return '}'; }
+"{"									{ return '{'; }
+"}"									{ return '}'; }
+
+{WHITESPACE} {
+		yylval.str = (char *) strdup(yytext);
+		return WHITESPACE;
+}
+{BREAK_LINE} {
+	yylval.str = (char *) strdup(yytext);
+	return BREAK_LINE;
+}
 
 
 {STRING} {	
@@ -49,5 +58,9 @@ ANY_CHAR .
 }
 
 {ANY_CHAR} {
-		printf ("Caracter %c (ASCII=%d) inesperado\n", yytext[0], yytext[0]);
-		   }
+		printf ("Caracter '%c' (ASCII=%d) inesperado\n", yytext[0], yytext[0]);
+}
+
+%%
+
+YYSTYPE yylval;
