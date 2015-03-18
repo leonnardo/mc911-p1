@@ -50,10 +50,12 @@ int maketitle = 0;
 %%
 
 html_doc: skipblanks header skipblanks T_BEGIN_DOC skipblanks body skipblanks T_END_DOC skipblanks {
-			printf("<html>\n<header>\n");
+			printf("<html>\n<head>\n");
+			printf("<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax:{inlineMath:[['$','$']]}});</script>");
+			printf("<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>\n");
 			if (maketitle)
 				printf("<title>%s</title>\n", $2);
-			printf("</header>");
+			printf("</head>");
 			printf("<body>%s\n</body>\n</html>", $6);
 
 		}
@@ -81,7 +83,7 @@ skipblanks:
 
 whitespace:
 	WHITESPACE
-	| BREAK_LINE
+	| BREAK_LINE  { $$ = "<br>"; }
 ;
 
 multspaces:
