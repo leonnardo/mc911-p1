@@ -50,6 +50,8 @@ char* bibliography[200];
 
 html_doc: skipblanks header skipblanks T_BEGIN_DOC skipblanks body skipblanks T_END_DOC skipblanks {
 			printf("<html>\n<head>\n");
+			printf("<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>");
+			printf("<script>$(function(){$('a.cite').each(function(i, elem) {var id = $(elem).attr(\"href\"); $(elem).text('[' + $(id).attr('data-id') + ']');});});</script>");
 			printf("<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax:{inlineMath:[['$','$']]}});</script>");
 			printf("<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>\n");
 			if (maketitle)
@@ -74,21 +76,15 @@ content: T_MAKETITLE  { maketitle = 1; }
 		| T_ITEM  skipblanks text skipblanks { $$ = concat(3, "<li>",$3,"</li>"); } 
 		| T_ITEM  '[' text ']' skipblanks text skipblanks { $$ = concat(6, "<li style='list-style-type: none;'>", "<b>", $3, "</b> ", $6, "</li>"); } 
 		| T_END_ITEM { $$ = "</ul>"; }
-		| T_BEGIN_BIB { $$ = "<h2>Referencias</h2>"; }
+		| T_BEGIN_BIB { $$ = "<h2>References</h2><ol start=\"0\">"; }
 		| T_BIBITEM '{' text '}' skipblanks text skipblanks { 
-							bibliography[count_bb++] = strdup($3);
-							$$ = concat(3,"<i>",$6,"</i>");
+							char buff[100];
+							sprintf(buff, "%d", count_bb++);
+							$$ = concat(7,"<li id=\"",$3,"\" data-id=\"", buff, "\">", $6,"</li>");
 			}
-		| T_END_BIB skipblanks
+		| T_END_BIB skipblanks  { $$ = "</ol>"; }
 		| T_CITE '{' text '}' { 
-			int i;
-			for (i = 0; i < count_bb; i++) {
-				if (strcmp($3,bibliography[i]) == 0)
-					break;
-			}
-			char buff[3];
-			sprintf(buff, "%d", i);
-			$$ = concat(3,"[", buff, "]");
+			$$ = concat(3,"<a class=\"cite\" href=\"#", $3, "\"></a>");
 		}
 		;
 
@@ -147,7 +143,5 @@ int yyerror(const char* errmsg) {
 int yywrap(void) { return 1; }
 int parseMain(int argc, char** argv) {
 	yyparse();
-	for (int j = 0; j < count_bb; j++)
-		printf("%s\n", bibliography[j]);
 	return 0;
 }
