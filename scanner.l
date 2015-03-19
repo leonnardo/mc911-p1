@@ -63,16 +63,3 @@ ANY_CHAR .
 %%
 
 YYSTYPE yylval;
-
-int main(int argc, char** argv)
-{
-	if (0) {
-		int token;
-		while ((token = yylex()) != 0)
-			printf("Token: %d (%s)\n", token, yytext);
-		return 0;
-	} else {
-		return parseMain(argc, argv);
-	}
-     return 0;
-}

@@ -49,15 +49,17 @@ char* bibliography[200];
 %%
 
 html_doc: skipblanks header skipblanks T_BEGIN_DOC skipblanks body skipblanks T_END_DOC skipblanks {
-			printf("<html>\n<head>\n");
-			printf("<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>");
-			printf("<script>$(function(){$('a.cite').each(function(i, elem) {var id = $(elem).attr(\"href\"); $(elem).text('[' + $(id).attr('data-id') + ']');});});</script>");
-			printf("<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax:{inlineMath:[['$','$']]}});</script>");
-			printf("<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>\n");
+			FILE *output = fopen("output.html", "w");
+
+			fprintf(output,"<html>\n<head>\n");
+			fprintf(output,"<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>");
+			fprintf(output,"<script>$(function(){$('a.cite').each(function(i, elem) {var id = $(elem).attr(\"href\"); $(elem).text('[' + $(id).attr('data-id') + ']');});});</script>");
+			fprintf(output,"<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax:{inlineMath:[['$','$']]}});</script>");
+			fprintf(output,"<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>\n");
 			if (maketitle)
-				printf("<title>%s</title>\n", $2);
-			printf("</head>");
-			printf("<body>%s\n</body>\n</html>", $6);
+				fprintf(output,"<title>%s</title>\n", $2);
+			fprintf(output,"</head>");
+			fprintf(output,"<body>%s\n</body>\n</html>", $6);
 
 		}
 
@@ -141,7 +143,7 @@ int yyerror(const char* errmsg) {
 }
 
 int yywrap(void) { return 1; }
-int parseMain(int argc, char** argv) {
+int main() {
 	yyparse();
 	return 0;
 }
